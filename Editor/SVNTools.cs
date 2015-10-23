@@ -78,7 +78,9 @@ public class SVNTools {
 	public static void ShowCommitWindow(string workDir,params string[] files){
 		SVNCommitWindow commitWindow = SVNCommitWindow.Open();
 		commitWindow.workDir = workDir;
+		commitWindow.isFetching = true;
 		SVNFileStatusCache.Refresh(delegate() {
+			commitWindow.isFetching = false;
 			for(int i = 0;i<files.Length;i++){
 				Dictionary<string,SVNFileType> changed = SVNFileStatusCache.Filter(workDir,files[i]);
 				foreach(string path in changed.Keys){

@@ -22,6 +22,8 @@ public class SVNCommitWindow : EditorWindow {
 	private bool _needRepaint = false;
 	private bool _needClose = false;
 	public string _workDir = "";
+	public bool isFetching = false;
+
 	public string workDir  {
 		set{
 			_workDir = value;
@@ -139,7 +141,7 @@ public class SVNCommitWindow : EditorWindow {
 		}
 	}
 
-	private void CommitSelected(){
+	private void OnCommitClick(){
 
 		List<string> tobeAddList = new List<string>();
 		List<string> list = new List<string>();
@@ -312,7 +314,10 @@ public class SVNCommitWindow : EditorWindow {
 		}
 		_scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,EditorStyles.inspectorFullWidthMargins);
 
-		if(_topLevelItems.Count == 0){
+		if(isFetching){
+			EditorGUILayout.LabelField("Fetching...");
+		}
+		else if(_topLevelItems.Count == 0){
 			EditorGUILayout.LabelField("Empty");
 		}
 		foreach(Item item in _topLevelItems){
@@ -322,7 +327,7 @@ public class SVNCommitWindow : EditorWindow {
 		EditorGUILayout.EndVertical();
 		_commitMessage = EditorGUILayout.TextArea(_commitMessage,GUILayout.Height(50));
 		if(GUILayout.Button("Commit")){
-			CommitSelected();
+			OnCommitClick();
 		}
 		
 		if(_needRepaint){
