@@ -1,5 +1,5 @@
 # UnitySVN
- This is a Unity SVN GUI Plugin.Before using this plugin, *UnityShellHelper* should be import first.
+ This is a Unity SVN GUI Plugin.Before using this plugin, *UnityShellHelper* should be imported first.
  
  It's still in developing.
 
