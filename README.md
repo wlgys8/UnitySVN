@@ -8,6 +8,6 @@ Support Now:
 -  svn update
 -  svn commit
 -  svn status
-
+-  svn revert
 
 <img src = ".image/imag1.png">
