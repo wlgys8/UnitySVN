@@ -5,10 +5,11 @@ using UnityEditor;
 public class SVNAssetModifyProcesser  : AssetPostprocessor{
 
 	static SVNAssetModifyProcesser(){
-		SVNTools.onCommitSuccess += OnCommitSuccess;
+		SVNTools.onCommitSuccess += OnRefreshFileStatus;
+		SVNTools.onRevertSuccess += OnRefreshFileStatus;
 	}
 
-	static void OnCommitSuccess(){
+	static void OnRefreshFileStatus(){
 		SVNFileStatusCache.Refresh(delegate() {
 			EditorApplication.RepaintProjectWindow();
 		}); 

@@ -19,6 +19,8 @@ public class SVNTools {
 
 	public static event System.Action onCommitSuccess;
 	public static event System.Action onUpdateCompleted;
+	public static event System.Action onRevertSuccess;
+
 	private static ShellHelper _shell;
 
 	static SVNTools(){
@@ -48,6 +50,33 @@ public class SVNTools {
 		req.onLog += delegate(int logLevel,string obj) {
 			logWindow.Log(obj);
 		};
+	}
+
+	public static ShellHelper.ShellRequest CMDRevert(string workDir,params string[] paths){
+		System.Text.StringBuilder cmd = new System.Text.StringBuilder();
+		cmd.Append("svn revert ");
+		for(int i = 0;i<paths.Length;i++){
+			cmd.Append(" "+paths[i]);
+		}
+		cmd.Append(" -R");
+		
+		ShellHelper.ShellRequest shellReq = _shell.ProcessCMD(cmd.ToString(),workDir);
+		return shellReq;
+	}
+
+	public static ShellHelper.ShellRequest Revert(string workDir,params string[] paths){
+		ShellHelper.ShellRequest req =  CMDRevert(workDir,paths);
+		SVNLogWindow.current.Log("Revert...");
+		req.onLog += delegate(int arg1, string arg2) {
+			SVNLogWindow.current.Log(arg2);
+		};
+		req.onDone += delegate() {
+			SVNLogWindow.current.Log("Completed");
+			if(onRevertSuccess != null){
+				onRevertSuccess();
+			}
+		};
+		return req;
 	}
 
 	public static ShellHelper.ShellRequest CMDStatus(string workDir,string[] files,string[] op = null){
@@ -349,6 +378,14 @@ public class SVNTools {
 		string root = null;
 		List<string> files = GetRelativePathsUnderCommonRoot(paths,out root);
 		ShowCommitWindow(root,files.ToArray());
+	}
+
+	[MenuItem("Assets/SVN/Revert")]
+	public static void RevertCurrent(){
+		List<string> paths = GetIndependentSelectionPaths();
+		string root = null;
+		List<string> files = GetRelativePathsUnderCommonRoot(paths,out root);
+		SVNTools.Revert(root,files.ToArray());
 	}
 
 	[MenuItem("Assets/SVN/Cleanup")]
